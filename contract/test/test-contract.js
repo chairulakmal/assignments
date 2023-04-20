@@ -11,6 +11,7 @@ import { makeFakeVatAdmin } from '@agoric/zoe/tools/fakeVatAdmin.js';
 import { makeZoeKit } from '@agoric/zoe';
 import { AmountMath } from '@agoric/ertp';
 
+// @ts-ignore
 const filename = new URL(import.meta.url).pathname;
 const dirname = path.dirname(filename);
 
@@ -48,4 +49,17 @@ test('zoe - mint payments', async (t) => {
 
   // Bob got 1000 tokens
   t.deepEqual(tokenPayoutAmount, tokens1000);
+
+  // week-2 start
+  const yapIssuer = await E(publicFacet).getYapIssuer();
+  const yapBrand = await E(yapIssuer).getBrand();
+
+  // create new token
+  const yap1000 = AmountMath.make(yapBrand, 1000n);
+
+  // compare both issuers and amounts of both tokens
+  t.notDeepEqual(yapIssuer, tokenIssuer);
+  t.notDeepEqual(yapBrand, tokenBrand);
+  t.notDeepEqual(yap1000, tokens1000);
+  // week-2 end
 });
